@@ -1,0 +1,84 @@
+
+{
+  "name": "EZBW Bot",
+  "description": "bot penjaga grup chat!",
+  "keywords": [
+    "telegram",
+    "best",
+    "group",
+    "manager",
+    "3"
+  ],
+  "repository": "hhttps://github.com/aliparisp/ezbw",
+  "env": {
+    "ENV": {
+      "description": "Ketik 'ANYTHING' untuk mengaktifkan variabel env.",
+      "value": "ANYTHING"
+    },
+    "TOKEN": {
+      "description": "Bot Token Kalian, bikin bot di @BotFather jika kalian belum memiliki bot.",
+      "value": "1798322386:AAFas2QVZMjDLrslICjgcfdbjLa2vd-wTY4"
+    },
+    "OWNER_ID": {
+      "description": "Ketik User ID kalian",
+      "value": "1317838294"
+    },
+    "OWNER_USERNAME": {
+      "description": "Your username",
+      "value": "hbreakclub"
+    },
+  
+    "URL": {
+      "description": "The Heroku App URL similar to https://<appname>.herokuapp.com/",
+      "value": "https://ez69bwbot.herokuapp.com/"
+    },
+    "MESSAGE_DUMP": {
+      "description": "Cantumkan Chat ID grup anda, opsional: obrolan tempat balasan Anda menyimpan pesan, untuk menghentikan orang menghapus pesan lama mereka.",
+      "value": "-1001247852177"
+    },
+    "SUDO_USERS": {
+      "description": "A space separated list of user_ids which should be considered sudo users (Tambahkan USER ID kalian).",
+      "value": "1092088284 1317838294 1626664284"
+    },
+    "SUPPORT_USERS": {
+      "description": "A space separated list of user_ids which should be considered support users can gban/ungban, nothing else (Tambahkan USER ID kalian).",
+      "value": "1092088284 1317838294 1626664284"
+    },
+    "WHITELIST_USERS": {
+      "description": "A space separated list of user_ids which should be considered whitelisted - they can't be banned (Tambahkan USER ID kalian).",
+      "value": "1092088284 1317838294 1626664284"
+    },
+    "DONATION_LINK": {
+      "description": "Optional: link where you would like to receive donations.",
+      "value": "https://t.me/ezbwx"
+    },
+    "PORT": {
+      "description": "Port to use for your webhooks",
+      "value": "8443"
+    },
+    "DEL_CMDS": {
+      "description": "Apakah akan menghapus perintah dari pengguna yang tidak memiliki hak untuk menggunakan perintah itu.",
+      "value": "True"
+    },
+    "STRICT_GBAN": {
+      "description": "Enforce gbans across new groups as well as old groups. When a gbanned user talks, he will be banned.",
+      "value": "True"
+    },
+    "ALLOW_EXCL": {
+      "description": "Apakah akan mengizinkan penggunaan tanda seru!  untuk perintah serta /.",
+      "value": "True"
+    },
+    "BAN_STICKER": {
+      "description": "Stiker yang akan digunakan saat banning orang. Gunakan https://telegram.dog/ShowJsonBot untuk mendapatkan file_id.",
+      "value": "CAACAgUAAxkBAAEIyDdgWFSEycfAeJlKvAlkknHf2CDEYAAC_QEAAtGHwVZisF_cfiB-_B4E"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "10"
+      }
+    }
+  ]
+}
