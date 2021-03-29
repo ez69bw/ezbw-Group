@@ -435,7 +435,7 @@ def muteme(bot: Bot, update: Update, args: List[str]) -> str:
 
     res = bot.restrict_chat_member(chat.id, user_id, can_send_messages=False)
     if res:
-        update.effective_message.reply_text("No problem, Muted!")
+        update.effective_message.reply_text("Muted!\nDiboongin mau aja HAHA")
         log = "<b>{}:</b>" \
               "\n#MUTEME" \
               "\n<b>User:</b> {}" \
