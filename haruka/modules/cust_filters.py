@@ -24,8 +24,6 @@ from haruka.modules.connection import connected
 HANDLER_GROUP = 10
 
 ENUM_FUNC_MAP = {
-    sql.Types.TEXT.value: dispatcher.bot.send_message,
-    sql.Types.BUTTON_TEXT.value: dispatcher.bot.send_message,
     sql.Types.STICKER.value: dispatcher.bot.send_sticker,
     sql.Types.DOCUMENT.value: dispatcher.bot.send_document,
     sql.Types.PHOTO.value: dispatcher.bot.send_photo,
@@ -288,30 +286,7 @@ def reply_filter(bot: Bot, update: Update):
                             id=message.from_user.id,
                         )
                     else:
-                        filtext = ""
-                else:
-                    filtext = ""
-
-                if filt.file_type in (sql.Types.BUTTON_TEXT, sql.Types.TEXT):
-                    try:
-                        deletion(update, context, context.bot.send_message(
-                            chat.id,
-                            markdown_to_html(filtext),
-                            parse_mode=ParseMode.HTML,
-                            disable_web_page_preview=True,
-                            reply_markup=keyboard
-                        ))
-                    except BadRequest as excp:
-                        LOGGER.exception("Error in filters: " + excp.message)
-                        try:
-                            send_message(
-                                update.effective_message,
-                                get_exception(excp, filt, chat),
-                            )
-                        except BadRequest as excp:
-                            LOGGER.exception(
-                                "Failed to send message: " + excp.message,
-                            )
+                        filtext = "'
                 else:
                     try:
                         ENUM_FUNC_MAP[filt.file_type](
