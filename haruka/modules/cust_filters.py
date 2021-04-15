@@ -23,6 +23,18 @@ from haruka.modules.connection import connected
 
 HANDLER_GROUP = 10
 
+ENUM_FUNC_MAP = {
+    sql.Types.TEXT.value: dispatcher.bot.send_message,
+    sql.Types.BUTTON_TEXT.value: dispatcher.bot.send_message,
+    sql.Types.STICKER.value: dispatcher.bot.send_sticker,
+    sql.Types.DOCUMENT.value: dispatcher.bot.send_document,
+    sql.Types.PHOTO.value: dispatcher.bot.send_photo,
+    sql.Types.AUDIO.value: dispatcher.bot.send_audio,
+    sql.Types.VOICE.value: dispatcher.bot.send_voice,
+    sql.Types.VIDEO.value: dispatcher.bot.send_video,
+    # sql.Types.VIDEO_NOTE.value: dispatcher.bot.send_video_note
+}
+
 
 @run_async
 def list_handlers(bot: Bot, update: Update):
@@ -185,6 +197,9 @@ def stop_filter(bot: Bot, update: Update):
 def reply_filter(bot: Bot, update: Update):
     chat = update.effective_chat  # type: Optional[Chat]
     message = update.effective_message  # type: Optional[Message]
+
+    if not update.effective_user or update.effective_user.id == 777000:
+        return
     to_match = extract_text(message)
     if not to_match:
         return
@@ -193,55 +208,186 @@ def reply_filter(bot: Bot, update: Update):
     for keyword in chat_filters:
         pattern = r"( |^|[^\w])" + re.escape(keyword) + r"( |$|[^\w])"
         if re.search(pattern, to_match, flags=re.IGNORECASE):
+            if MessageHandlerChecker.check_user(update.effective_user.id):
+                return
             filt = sql.get_filter(chat.id, keyword)
-            if filt.is_sticker:
-                message.reply_sticker(filt.reply)
-            elif filt.is_document:
-                try:
-                    message.reply_document(filt.reply)
-                except:
-                    print("L")
-            elif filt.is_image:
-                message.reply_photo(filt.reply)
-            elif filt.is_audio:
-                message.reply_audio(filt.reply)
-            elif filt.is_voice:
-                message.reply_voice(filt.reply)
-            elif filt.is_video:
-                try:
-                    message.reply_video(filt.reply)
-                except:
-                    print("Nut")
-            elif filt.has_markdown:
+            if filt.reply == "there is should be a new reply":
                 buttons = sql.get_buttons(chat.id, filt.keyword)
-                keyb = build_keyboard(buttons)
+                keyb = build_keyboard_parser(context.bot, chat.id, buttons)
                 keyboard = InlineKeyboardMarkup(keyb)
 
-                try:
-                    message.reply_text(filt.reply, parse_mode=ParseMode.MARKDOWN,
-                                       disable_web_page_preview=True,
-                                       reply_markup=keyboard)
-                except BadRequest as excp:
-                    if excp.message == "Unsupported url protocol":
-                        message.reply_text("You seem to be trying to use an unsupported url protocol. Telegram "
-                                           "doesn't support buttons for some protocols, such as tg://. Please try "
-                                           "again, or ask in @HarukaAyaGroup for help.")
-                    elif excp.message == "Reply message not found":
-                        bot.send_message(chat.id, filt.reply, parse_mode=ParseMode.MARKDOWN,
-                                         disable_web_page_preview=True,
-                                         reply_markup=keyboard)
+                VALID_WELCOME_FORMATTERS = [
+                    "first",
+                    "last",
+                    "fullname",
+                    "username",
+                    "id",
+                    "chatname",
+                    "mention",
+                ]
+                if filt.reply_text:
+                    if "%%%" in filt.reply_text:
+                        split = filt.reply_text.split("%%%")
+                        if all(split):
+                            text = random.choice(split)
+                        else:
+                            text = filt.reply_text
                     else:
+                        text = filt.reply_text
+                    if text.startswith("~!") and text.endswith("!~"):
+                        sticker_id = text.replace("~!", "").replace("!~", "")
                         try:
-                            message.reply_text("This note could not be sent, as it is incorrectly formatted. Ask in @HarukaAyaGroup if you can't figure out why!")
-                            LOGGER.warning("Message %s could not be parsed", str(filt.reply))
-                            LOGGER.exception("Could not parse filter %s in chat %s", str(filt.keyword), str(chat.id))
-                        except:
-                            print("Nut")
+                            deletion(update, context, context.bot.send_sticker(
+                                chat.id,
+                                sticker_id,
+                                reply_to_message_id=message.message_id,
+                            ))
+                            return
+                        except BadRequest as excp:
+                            if (
+                                excp.message
+                                == "Wrong remote file identifier specified: wrong padding in the string"
+                            ):
+                                context.bot.send_message(
+                                    chat.id,
+                                    "Message couldn't be sent, Is the sticker id valid?",
+                                )
+                                return
+                            else:
+                                LOGGER.exception("Error in filters: " + excp.message)
+                                return
+                    valid_format = escape_invalid_curly_brackets(
+                        text, VALID_WELCOME_FORMATTERS
+                    )
+                    if valid_format:
+                        filtext = valid_format.format(
+                            first=escape(message.from_user.first_name),
+                            last=escape(
+                                message.from_user.last_name
+                                or message.from_user.first_name
+                            ),
+                            fullname=" ".join(
+                                [
+                                    escape(message.from_user.first_name),
+                                    escape(message.from_user.last_name),
+                                ]
+                                if message.from_user.last_name
+                                else [escape(message.from_user.first_name)]
+                            ),
+                            username="@" + escape(message.from_user.username)
+                            if message.from_user.username
+                            else mention_html(
+                                message.from_user.id, message.from_user.first_name
+                            ),
+                            mention=mention_html(
+                                message.from_user.id, message.from_user.first_name
+                            ),
+                            chatname=escape(message.chat.title)
+                            if message.chat.type != "private"
+                            else escape(message.from_user.first_name),
+                            id=message.from_user.id,
+                        )
+                    else:
+                        filtext = ""
+                else:
+                    filtext = ""
 
+                if filt.file_type in (sql.Types.BUTTON_TEXT, sql.Types.TEXT):
+                    try:
+                        deletion(update, context, context.bot.send_message(
+                            chat.id,
+                            markdown_to_html(filtext),
+                            parse_mode=ParseMode.HTML,
+                            disable_web_page_preview=True,
+                            reply_markup=keyboard
+                        ))
+                    except BadRequest as excp:
+                        LOGGER.exception("Error in filters: " + excp.message)
+                        try:
+                            send_message(
+                                update.effective_message,
+                                get_exception(excp, filt, chat),
+                            )
+                        except BadRequest as excp:
+                            LOGGER.exception(
+                                "Failed to send message: " + excp.message,
+                            )
+                else:
+                    try:
+                        ENUM_FUNC_MAP[filt.file_type](
+                            chat.id,
+                            filt.file_id,
+                            reply_markup=keyboard,
+                        )
+                    except BadRequest:
+                        send_message(
+                            message,
+                            "I don't have the permission to send the content of the filter.",
+                        )
+                break
             else:
-                # LEGACY - all new filters will have has_markdown set to True.
-                message.reply_text(filt.reply)
-            break
+                if filt.is_sticker:
+                    message.reply_sticker(filt.reply)
+                elif filt.is_document:
+                    message.reply_document(filt.reply)
+                elif filt.is_image:
+                    message.reply_photo(filt.reply)
+                elif filt.is_audio:
+                    message.reply_audio(filt.reply)
+                elif filt.is_voice:
+                    message.reply_voice(filt.reply)
+                elif filt.is_video:
+                    message.reply_video(filt.reply)
+                elif filt.has_markdown:
+                    buttons = sql.get_buttons(chat.id, filt.keyword)
+                    keyb = build_keyboard_parser(context.bot, chat.id, buttons)
+                    keyboard = InlineKeyboardMarkup(keyb)
+
+                    try:
+                        deletion(update, context, context.bot.send_message(
+                            chat.id,
+                            filt.reply,
+                            parse_mode=ParseMode.MARKDOWN,
+                            disable_web_page_preview=True,
+                            reply_markup=keyboard,
+                        ))
+                    except BadRequest as excp:
+                        if excp.message == "Unsupported url protocol":
+                            try:
+                                send_message(
+                                    update.effective_message,
+                                    "You seem to be trying to use an unsupported url protocol. "
+                                    "Telegram doesn't support buttons for some protocols, such as tg://. Please try "
+                                    "again...",
+                                )
+                            except BadRequest as excp:
+                                LOGGER.exception("Error in filters: " + excp.message)
+                        else:
+                            try:
+                                send_message(
+                                    update.effective_message,
+                                    "This message couldn't be sent as it's incorrectly formatted.",
+                                )
+                            except BadRequest as excp:
+                                LOGGER.exception("Error in filters: " + excp.message)
+                            LOGGER.warning(
+                                "Message %s could not be parsed", str(filt.reply)
+                            )
+                            LOGGER.exception(
+                                "Could not parse filter %s in chat %s",
+                                str(filt.keyword),
+                                str(chat.id),
+                            )
+
+                else:
+                    # LEGACY - all new filters will have has_markdown set to True.
+                    try:
+                        deletion(update, context, context.bot.send_message(
+                        	chat.id, filt.reply
+                        ))
+                    except BadRequest as excp:
+                        LOGGER.exception("Error in filters: " + excp.message)
+                break
 
 
 def __stats__():
