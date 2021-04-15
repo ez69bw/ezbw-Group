@@ -284,21 +284,7 @@ def reply_filter(bot: Bot, update: Update):
                             if message.chat.type != "private"
                             else escape(message.from_user.first_name),
                             id=message.from_user.id,
-                        )
-                    else:
-                        filtext = "'
-                else:
-                    try:
-                        ENUM_FUNC_MAP[filt.file_type](
-                            chat.id,
-                            filt.file_id,
-                            reply_markup=keyboard,
-                        )
-                    except BadRequest:
-                        send_message(
-                            message,
-                            "I don't have the permission to send the content of the filter.",
-                        )
+                       )
                 break
             else:
                 if filt.is_sticker:
