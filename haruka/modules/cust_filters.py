@@ -23,16 +23,6 @@ from haruka.modules.connection import connected
 
 HANDLER_GROUP = 10
 
-ENUM_FUNC_MAP = {
-    sql.Types.STICKER.value: dispatcher.bot.send_sticker,
-    sql.Types.DOCUMENT.value: dispatcher.bot.send_document,
-    sql.Types.PHOTO.value: dispatcher.bot.send_photo,
-    sql.Types.AUDIO.value: dispatcher.bot.send_audio,
-    sql.Types.VOICE.value: dispatcher.bot.send_voice,
-    sql.Types.VIDEO.value: dispatcher.bot.send_video,
-    # sql.Types.VIDEO_NOTE.value: dispatcher.bot.send_video_note
-}
-
 
 @run_async
 def list_handlers(bot: Bot, update: Update):
