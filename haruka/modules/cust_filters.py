@@ -16,25 +16,25 @@ from telegram.ext import (
 )
 from telegram.utils.helpers import mention_html, escape_markdown
 
-from AstrakoBot import dispatcher, LOGGER, DRAGONS
-from AstrakoBot.modules.disable import DisableAbleCommandHandler
-from AstrakoBot.modules.helper_funcs.handlers import MessageHandlerChecker
-from AstrakoBot.modules.helper_funcs.chat_status import user_admin
-from AstrakoBot.modules.helper_funcs.extraction import extract_text
-from AstrakoBot.modules.helper_funcs.filters import CustomFilters
-from AstrakoBot.modules.helper_funcs.misc import build_keyboard_parser
-from AstrakoBot.modules.helper_funcs.msg_types import get_filter_type
-from AstrakoBot.modules.helper_funcs.string_handling import (
+from haruka import dispatcher, LOGGER, DRAGONS
+from haruka.modules.disable import DisableAbleCommandHandler
+from haruka.modules.helper_funcs.handlers import MessageHandlerChecker
+from haruka.modules.helper_funcs.chat_status import user_admin
+from haruka.modules.helper_funcs.extraction import extract_text
+from haruka.modules.helper_funcs.filters import CustomFilters
+from haruka.modules.helper_funcs.misc import build_keyboard_parser
+from haruka.modules.helper_funcs.msg_types import get_filter_type
+from haruka.modules.helper_funcs.string_handling import (
     split_quotes,
     button_markdown_parser,
     escape_invalid_curly_brackets,
     markdown_to_html,
 )
-from AstrakoBot.modules.sql import cust_filters_sql as sql
+from haruka.modules.sql import cust_filters_sql as sql
 
-from AstrakoBot.modules.connection import connected
+from haruka.modules.connection import connected
 
-from AstrakoBot.modules.helper_funcs.alternate import send_message, typing_action
+from haruka.modules.helper_funcs.alternate import send_message, typing_action
 
 HANDLER_GROUP = 10
 
