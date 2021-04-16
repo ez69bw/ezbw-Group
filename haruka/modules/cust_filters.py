@@ -216,6 +216,36 @@ def reply_filter(bot: Bot, update: Update):
                 buttons = sql.get_buttons(chat.id, filt.keyword)
                 keyb = build_keyboard(buttons)
                 keyboard = InlineKeyboardMarkup(keyb)
+                if filt.reply_text:
+                    if "%%%" in filt.reply_text:
+                        split = filt.reply_text.split("%%%")
+                        if all(split):
+                            text = random.choice(split)
+                        else:
+                            text = filt.reply_text
+                    else:
+                        text = filt.reply_text
+                    if text.startswith("~!") and text.endswith("!~"):
+                        sticker_id = text.replace("~!", "").replace("!~", "")
+                        try:
+                            deletion(update, context, context.bot.send_sticker(
+                                chat.id,
+                                sticker_id,
+                                reply_to_message_id=message.message_id,
+                            ))
+                            return
+                        except BadRequest as excp:
+                            if (
+                                excp.message
+                                == "Wrong remote file identifier specified: wrong padding in the string"
+                            ):
+                                context.bot.send_message(
+                                    chat.id,
+                                    "Message couldn't be sent, Is the sticker id valid?",
+                                )
+                                return
+                            else:
+                                LOGGER.exception("Error in filters: " + excp.message)
 
                 try:
                     message.reply_text(filt.reply, parse_mode=ParseMode.MARKDOWN,
@@ -278,7 +308,15 @@ A multiword filter could be set via:
 `/filter "hello friend" Hello back! Long time no see!`
 If you want to save an image, gif, or sticker, or any other data, do the following:
 `/filter word while replying to a sticker or whatever data you'd like. Now, every time someone mentions "word", that sticker will be sent as a reply.`
-Now, anyone saying "hello" will be replied to with "Hello there! How are you?".
+Now, anyone saying "hello" will be replied to with "Hello there! How are you?"
+Separate diff replies by `%%%` to get random replies
+ *Example:* 
+ `/filter "filtername"
+ Reply 1
+ %%%
+ Reply 2
+ %%%
+ Reply 3`.
 """
 
 __mod_name__ = "Filters"
