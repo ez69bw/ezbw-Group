@@ -3,6 +3,7 @@ import threading
 from sqlalchemy import Column, String, UnicodeText, Boolean, Integer, distinct, func
 
 from haruka.modules.sql import BASE, SESSION
+from haruka.modules.helper_funcs.msg_types import Types
 
 
 class CustomFilters(BASE):
