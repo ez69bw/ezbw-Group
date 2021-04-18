@@ -195,14 +195,14 @@ def reply_filter(bot: Bot, update: Update):
         if re.search(pattern, to_match, flags=re.IGNORECASE):
             filt = sql.get_filter(chat.id, keyword)
                 if filt.is_text:
-                    if "%%%" in filt.reply_text:
-                        split = filt.reply_text.split("%%%")
+                    if "%%%" in filt.is_text:
+                        split = filt.is_text.split("%%%")
                         if all(split):
                             text = random.choice(split)
                         else:
-                            text = filt.reply_text
+                            text = filt.is_text
                     else:
-                        text = filt.reply_text
+                        text = filt.is_text
                     if text.startswith("~!") and text.endswith("!~"):
                         sticker_id = text.replace("~!", "").replace("!~", "")
                         try:
