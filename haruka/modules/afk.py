@@ -45,14 +45,14 @@ def no_longer_afk(bot: Bot, update: Update):
         firstname = update.effective_user.first_name
         try:
             options = [
-                f"{fname} kemana aja? abis mulung ya?",
-                f"parm tross {fname} bisa bisanya baru nongol",
-                f"hii {fname} jelek, kangen ak ya?",
-                f"{fname} abis galau nih diputusin makanya baru nongol xixi",
-                f"eyoo wassup {fname}, apakabs kawan?",
-                f"{fname} abis ngebucin nih!",
-                f"hi gembel {fname}, maap disini gaada jatah gembel",
-                f"hii mniez, {fname} datang lagi mwehehe",
+                f"{firstname} kemana aja? abis mulung ya?",
+                f"parm tross {firsrname} bisa bisanya baru nongol",
+                f"hii {firstname} jelek, kangen ak ya?",
+                f"{firstname} abis galau nih diputusin makanya baru nongol xixi",
+                f"eyoo wassup {firstname}, apakabs kawan?",
+                f"{firstname} abis ngebucin nih!",
+                f"hi gembel {firstname}, maap disini gaada jatah gembel",
+                f"hii mniez, {firstname} datang lagi mwehehe",
             ]
             chosen_option = random.choice(options)
             update.effective_message.reply_text(chosen_option.format(firstname))
