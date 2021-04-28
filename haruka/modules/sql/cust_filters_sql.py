@@ -2,8 +2,8 @@ import threading
 
 from sqlalchemy import Boolean, Column, Integer, String, UnicodeText, distinct, func
 
-from Mizuki.modules.helper_funcs.msg_types import Types
-from Mizuki.modules.sql import BASE, SESSION
+from haruka.modules.helper_funcs.msg_types import Types
+from haruka.modules.sql import BASE, SESSION
 
 
 class CustomFilters(BASE):
