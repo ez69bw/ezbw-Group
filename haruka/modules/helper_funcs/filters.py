@@ -1,7 +1,7 @@
 from telegram import Message
 from telegram.ext import BaseFilter
 
-from haruka import SUDO_USERS, WISHLIST_USERS, SUPPORT_USERS
+from haruka import SUDO_USERS, WHITELIST_USERS, SUPPORT_USERS
 
 
 class CustomFilters(object):
@@ -19,7 +19,7 @@ class CustomFilters(object):
 
     class _Developers(BaseFilter):
         def filter(self, message: Message):
-            return bool(message.from_user and message.from_user.id in WISHLIST_USERS)
+            return bool(message.from_user and message.from_user.id in WHITELIST_USERS)
 
     dev_filter = _Developers()
 
