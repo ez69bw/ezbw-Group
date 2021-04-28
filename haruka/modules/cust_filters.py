@@ -3,7 +3,7 @@ import re
 from html import escape
 
 import telegram
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Message, ParseMode
+from telegram import Update, Bot, User, InlineKeyboardButton, InlineKeyboardMarkup, Message, ParseMode
 from telegram.error import BadRequest
 from telegram.ext import (
     CallbackQueryHandler,
@@ -15,17 +15,17 @@ from telegram.ext import (
 )
 from telegram.utils.helpers import escape_markdown, mention_html
 
-from Mizuki import DRAGONS, LOGGER, dispatcher
-from Mizuki.modules.connection import connected
-from Mizuki.modules.disable import DisableAbleCommandHandler
-from Mizuki.modules.helper_funcs.alternate import send_message, typing_action
-from Mizuki.modules.helper_funcs.chat_status import user_admin
-from Mizuki.modules.helper_funcs.extraction import extract_text
-from Mizuki.modules.helper_funcs.filters import CustomFilters
-from Mizuki.modules.helper_funcs.handlers import MessageHandlerChecker
-from Mizuki.modules.helper_funcs.misc import build_keyboard_parser
-from Mizuki.modules.helper_funcs.msg_types import get_filter_type
-from Mizuki.modules.helper_funcs.string_handling import (
+from Haruka import DRAGONS, LOGGER, dispatcher
+from Haruka.modules.connection import connected
+from Haruka.modules.disable import DisableAbleCommandHandler
+from Haruka.modules.helper_funcs.alternate import send_message, typing_action
+from Haruka.modules.helper_funcs.chat_status import user_admin
+from Haruka.modules.helper_funcs.extraction import extract_text
+from Haruka.modules.helper_funcs.filters import CustomFilters
+from Haruka.modules.helper_funcs.handlers import MessageHandlerChecker
+from Haruka.modules.helper_funcs.misc import build_keyboard_parser
+from Haruka.modules.helper_funcs.msg_types import get_filter_type
+from Haruka.modules.helper_funcs.string_handling import (
     button_markdown_parser,
     escape_invalid_curly_brackets,
     markdown_to_html,
@@ -50,7 +50,7 @@ ENUM_FUNC_MAP = {
 
 @run_async
 @typing_action
-def list_handlers(update, context):
+def list_handlers(bot: Bot, update: Update):
     chat = update.effective_chat
     user = update.effective_user
 
@@ -98,7 +98,7 @@ def list_handlers(update, context):
 # NOT ASYNC BECAUSE DISPATCHER HANDLER RAISED
 @user_admin
 @typing_action
-def filters(update, context):
+def filters(bot: Bot, update: Update):
     chat = update.effective_chat
     user = update.effective_user
     msg = update.effective_message
@@ -225,7 +225,7 @@ def filters(update, context):
 # NOT ASYNC BECAUSE DISPATCHER HANDLER RAISED
 @user_admin
 @typing_action
-def stop_filter(update, context):
+def stop_filter(bot: Bot, update: Update):
     chat = update.effective_chat
     user = update.effective_user
     args = update.effective_message.text.split(None, 1)
@@ -489,7 +489,7 @@ def reply_filter(update, context):
 
 
 @run_async
-def rmall_filters(update, context):
+def rmall_filters(bot: Bot, update: Update):
     chat = update.effective_chat
     user = update.effective_user
     member = chat.get_member(user.id)
@@ -516,7 +516,7 @@ def rmall_filters(update, context):
 
 
 @run_async
-def rmall_callback(update, context):
+def rmall_callback(bot: Bot, update: Update):
     query = update.callback_query
     chat = update.effective_chat
     msg = update.effective_message
@@ -626,7 +626,7 @@ Check `/markdownhelp` to know more!
 
 """
 
-__mod_name__ = "々 Filters 々"
+__mod_name__ = "Filters"
 
 FILTER_HANDLER = CommandHandler("filter", filters)
 STOP_HANDLER = CommandHandler("stop", stop_filter)
