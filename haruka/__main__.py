@@ -26,7 +26,7 @@ nama saya {}!
 Saya adalah bot yang dirancang karena kegabutan paris mwehehe,
 Dan saya ditugaskan untuk mengatur dan meramaikan grup chat kalian.
 
-Managed by : [paris](t.me/ezbwx).
+Managed by : paris.
 
 Jika kalian ingin mengaktifkan Anti-spam silahkan pakai cmd : 
 /antispam on 
