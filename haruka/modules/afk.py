@@ -27,22 +27,35 @@ def afk(bot: Bot, update: Update):
 
     sql.set_afk(update.effective_user.id, reason)
     fname = update.effective_user.first_name
-    update.effective_message.reply_text(tld(chat.id, f"ada awan diatas cowboy\n{fname} cabut dulu boy!"))
+    update.effective_message.reply_text(tld(chat.id, f"ada awan diatas koboy\n{fname} cabut dulu boy!"))
 
 
 @run_async
 def no_longer_afk(bot: Bot, update: Update):
-    user = update.effective_user  # type: Optional[User]
-    chat = update.effective_chat  # type: Optional[Chat]
+    user = update.effective_user
+    message = update.effective_message
 
     if not user:  # ignore channels
         return
 
     res = sql.rm_afk(user.id)
     if res:
+        if message.new_chat_members:  # dont say msg
+            return
         firstname = update.effective_user.first_name
         try:
-            update.effective_message.reply_text(tld(chat.id, f"eyoo wassup {firstname}? udah puas mulung nya?"))
+            options = [
+                "{} abis darimana? puas mulung nya?",
+                "{} abis sad nih kayanya ditinggal kawin, yakan? ngaku!",
+                "hii {}, so sibuk banget segala off!",
+                "{} abis overthinking nih bg? yakan yakan!",
+                "eyo wassup {}, apakabs kawan?",
+                "pasti {} abis hibernasi yakan? jujur aja!",
+                "anjas {} anak pungut udah balik lagi xixi",
+                "kiw {} kemana aja? ak kangen hm",
+            ]
+            chosen_option = random.choice(options)
+            update.effective_message.reply_text(chosen_option.format(firstname))
         except:
             return
 
