@@ -1,7 +1,7 @@
 import html
 import random
 
-from telegram import MessageEntity, Update, bot
+from telegram import MessageEntity, Update, Bot
 from telegram.error import BadRequest
 from telegram.ext import CallbackContext, Filters, MessageHandler, run_async
 
@@ -15,7 +15,7 @@ AFK_REPLY_GROUP = 8
 
 
 @run_async
-def afk(update: Update, context: CallbackContext):
+def afk(bot: Bot, update: Update):
     args = update.effective_message.text.split(None, 1)
     user = update.effective_user
 
@@ -45,7 +45,7 @@ def afk(update: Update, context: CallbackContext):
 
 
 @run_async
-def no_longer_afk(update: Update, context: CallbackContext):
+def no_longer_afk(bot: Bot, update: Update):
     user = update.effective_user
     message = update.effective_message
 
@@ -75,7 +75,7 @@ def no_longer_afk(update: Update, context: CallbackContext):
 
 
 @run_async
-def reply_afk(update: Update, context: CallbackContext):
+def reply_afk(bot: Bot, update: Update):
     bot = context.bot
     message = update.effective_message
     userc = update.effective_user
