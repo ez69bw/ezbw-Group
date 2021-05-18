@@ -42,7 +42,7 @@ def no_longer_afk(bot: Bot, update: Update):
     if res:
         firstname = update.effective_user.first_name
         try:
-            update.effective_message.reply_text(tld(chat.id, f"eyoo wassup {firstname}? udah puas mulung nya?"))
+            update.effective_message.reply_text(tld(chat.id, f"wassup {firstname} jelek, kangen ak ya? mwehehe"))
         except:
             return
 
