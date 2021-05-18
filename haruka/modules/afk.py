@@ -1,14 +1,14 @@
 import html
 import random
 
-from telegram import MessageEntity, Update
+from telegram import MessageEntity, Update, bot
 from telegram.error import BadRequest
 from telegram.ext import CallbackContext, Filters, MessageHandler, run_async
 
-from Mizuki import dispatcher
-from Mizuki.modules.disable import DisableAbleCommandHandler, DisableAbleMessageHandler
-from Mizuki.modules.sql import afk_sql as sql
-from Mizuki.modules.users import get_user_id
+from Haruka import dispatcher
+from Haruka.modules.disable import DisableAbleCommandHandler, DisableAbleMessageHandler
+from Haruka.modules.sql import afk_sql as sql
+from Haruka.modules.users import get_user_id
 
 AFK_GROUP = 7
 AFK_REPLY_GROUP = 8
