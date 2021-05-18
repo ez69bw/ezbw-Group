@@ -6,7 +6,7 @@ from telegram.error import BadRequest
 from telegram.ext import Filters, MessageHandler, run_async
 
 from haruka import dispatcher
-from haruka.modules.disable import DisableAbleCommandHandler, DisableAbleMessageHandler
+from haruka.modules.disable import DisableAbleCommandHandler, DisableAbleRegexHandler
 from haruka.modules.sql import afk_sql as sql
 from haruka.modules.users import get_user_id
 
