@@ -3,7 +3,7 @@ import random
 
 from telegram import MessageEntity, Update, Bot
 from telegram.error import BadRequest
-from telegram.ext import CallbackContext, Filters, MessageHandler, run_async
+from telegram.ext import Filters, MessageHandler, run_async
 
 from Haruka import dispatcher
 from Haruka.modules.disable import DisableAbleCommandHandler, DisableAbleMessageHandler
