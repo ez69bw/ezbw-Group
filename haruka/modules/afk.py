@@ -155,7 +155,7 @@ When marked as AFK, any mentions will be replied to with a message to say you're
 """
 
 AFK_HANDLER = DisableAbleCommandHandler("afk", afk)
-AFK_REGEX_HANDLER = DisableAbleMessageHandler(
+AFK_REGEX_HANDLER = DisableAbleRegexHandler(
     Filters.regex(r"^(?i)brb(.*)$"), afk, friendly="afk"
 )
 NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.group, no_longer_afk)
