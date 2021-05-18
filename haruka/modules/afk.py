@@ -76,59 +76,35 @@ def no_longer_afk(bot: Bot, update: Update):
 
 @run_async
 def reply_afk(bot: Bot, update: Update):
-    bot = context.bot
-    message = update.effective_message
-    userc = update.effective_user
-    userc_id = userc.id
-    if message.entities and message.parse_entities(
-        [MessageEntity.TEXT_MENTION, MessageEntity.MENTION]
-    ):
-        entities = message.parse_entities(
-            [MessageEntity.TEXT_MENTION, MessageEntity.MENTION]
-        )
-
-        chk_users = []
+    message = update.effective_message  # type: Optional[Message]
+    if message.entities and message.parse_entities([MessageEntity.TEXT_MENTION, MessageEntity.MENTION]):
+        entities = message.parse_entities([MessageEntity.TEXT_MENTION, MessageEntity.MENTION])
         for ent in entities:
             if ent.type == MessageEntity.TEXT_MENTION:
                 user_id = ent.user.id
                 fst_name = ent.user.first_name
 
-                if user_id in chk_users:
-                    return
-                chk_users.append(user_id)
-
-            if ent.type == MessageEntity.MENTION:
-                user_id = get_user_id(
-                    message.text[ent.offset : ent.offset + ent.length]
-                )
+            elif ent.type == MessageEntity.MENTION:
+                user_id = get_user_id(message.text[ent.offset:ent.offset + ent.length])
                 if not user_id:
                     # Should never happen, since for a user to become AFK they must have spoken. Maybe changed username?
                     return
-
-                if user_id in chk_users:
-                    return
-                chk_users.append(user_id)
-
                 try:
                     chat = bot.get_chat(user_id)
                 except BadRequest:
-                    print(
-                        "Error: Could not fetch userid {} for AFK module".format(
-                            user_id
-                        )
-                    )
+                    print("Error: Could not fetch userid {} for AFK module".format(user_id))
                     return
                 fst_name = chat.first_name
 
             else:
                 return
 
-            check_afk(update, context, user_id, fst_name, userc_id)
+            check_afk(bot, update, user_id, fst_name)
 
     elif message.reply_to_message:
         user_id = message.reply_to_message.from_user.id
         fst_name = message.reply_to_message.from_user.first_name
-        check_afk(update, context, user_id, fst_name, userc_id)
+        check_afk(bot, update, user_id, fst_name)
 
 
 def check_afk(update, context, user_id, fst_name, userc_id):
