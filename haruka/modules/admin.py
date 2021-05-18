@@ -268,6 +268,17 @@ def reaction(bot: Bot, update: Update, args: List[str]) -> str:
             update.effective_message.reply_text("Reaksi atas perintah admin untuk pengguna sekarang `dinonaktifkan`!", parse_mode=ParseMode.MARKDOWN)
         else:
             update.effective_message.reply_text("Reaksi atas perintah admin untuk pengguna sekarang `diaktifkan`!", parse_mode=ParseMode.MARKDOWN)
+
+
+@run_async
+@user_admin
+def refresh_admin(update, _):
+    try:
+        ADMIN_CACHE.pop(update.effective_chat.id)
+    except KeyError:
+        pass
+
+    update.effective_message.reply_text("⚡️ 𝙚𝙯𝙗𝙬 𝙞𝙨 𝙖𝙘𝙩𝙞𝙫𝙚 ⚡️")
         
 
 __help__ = """
@@ -292,6 +303,7 @@ PROMOTE_HANDLER = DisableAbleCommandHandler("promote", promote, pass_args=True)
 DEMOTE_HANDLER = DisableAbleCommandHandler("demote", demote, pass_args=True)
 
 REACT_HANDLER = DisableAbleCommandHandler("reaction", reaction, pass_args=True, filters=Filters.group)
+ADMIN_REFRESH_HANDLER = CommandHandler("reload", refresh_admin, filters=Filters.group)
 
 ADMINLIST_HANDLER = DisableAbleCommandHandler(["adminlist", "admins"], adminlist)
 
@@ -302,3 +314,4 @@ dispatcher.add_handler(PROMOTE_HANDLER)
 dispatcher.add_handler(DEMOTE_HANDLER)
 dispatcher.add_handler(ADMINLIST_HANDLER)
 dispatcher.add_handler(REACT_HANDLER)
+dispatcher.add_handler(ADMIN_REFRESH_HANDLER)
